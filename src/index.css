@@ -69,10 +69,15 @@ td a {
 
 /* media item dialog */
 dialog {
+  top: 0;
   height: 90%;
   background: rgba(0, 0, 0, 0.8);
   z-index: 9999;
   color: rgba(255, 255, 255, 0.87);
+}
+
+dialog button {
+  display: block;
 }
 
 dialog img,
