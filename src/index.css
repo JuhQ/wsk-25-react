@@ -43,8 +43,16 @@ nav a:hover {
 }
 
 /* media item card */
-td {
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td,
+th {
   padding: 1rem;
+  border: 1px solid #ccc;
+  text-align: center;
 }
 
 td img {
@@ -69,7 +77,8 @@ td a {
 
 /* media item dialog */
 dialog {
-  top: 0;
+  position: fixed;
+  top: 5%;
   height: 90%;
   background: rgba(0, 0, 0, 0.8);
   z-index: 9999;
