@@ -3,6 +3,8 @@ import {useEffect, useState} from 'react';
 import MediaRow from '../components/MediaRow';
 import SingleView from '../components/SingleView';
 import {fetchData} from '../utils/fetchData';
+// import {uniq} from 'lodash';
+import {uniqBy} from 'lodash';
 
 const Home = () => {
   const [mediaArray, setMediaArray] = useState([]);
@@ -15,15 +17,39 @@ const Home = () => {
         import.meta.env.VITE_MEDIA_API + '/media',
       );
 
-      const authApiUrl = import.meta.env.VITE_AUTH_API;
-      const newData = await Promise.all(
-        mediaData.map(async (item) => {
-          const data = await fetchData(`${authApiUrl}/users/${item.user_id}`);
+      // uniikit arvot käyttäen lodash uniq funktiota, vaatii mapin, mutta mapin myötä palauttaa vain user_id:t
+      // const uniqueUserIds = uniq(mediaData.map(({user_id}) => user_id));
 
-          return {...item, username: data.username};
-        }),
+      // uniikit arvot käyttäen lodash uniqBy funktiota, helpompi käyttää, mutta palauttaa enemmän dataa (esim jos alkiot on objekteja, palauttaa kaikki uniikit objektit)
+      // console.log:lla kannattaa tarkistaa mitä kumpainenkin palauttaa
+      const uniqueUserIds = uniqBy(mediaData, 'user_id');
+
+      console.log('uniqueUserIds', uniqueUserIds);
+
+      const authApiUrl = import.meta.env.VITE_AUTH_API;
+      // vanha logiikka, hakee duplikaattidataa turhaan
+      // const newData = await Promise.all(
+      //   mediaData.map(async (item) => {
+      //     const data = await fetchData(`${authApiUrl}/users/${item.user_id}`);
+
+      //     return {...item, username: data.username};
+      //   }),
+      // );
+      const userData = await Promise.all(
+        uniqueUserIds.map(
+          async (item) =>
+            await fetchData(`${authApiUrl}/users/${item.user_id}`),
+        ),
       );
-      console.log('newData', newData);
+
+      console.log('userData', userData);
+
+      // uniikin datan hakemisen myötä joudutaan hieman logiikkaa restrukturoimaan
+      // säästö on kuitenkin selvä, vähemmän verkon yli meneviä pyyntöjä
+      const newData = mediaData.map((item) => {
+        const user = userData.find(({user_id}) => user_id === item.user_id);
+        return {...item, username: user.username};
+      });
 
       setMediaArray(newData);
     } catch (error) {
