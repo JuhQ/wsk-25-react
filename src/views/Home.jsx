@@ -44,12 +44,17 @@ const Home = () => {
 
       console.log('userData', userData);
 
-      // uniikin datan hakemisen myötä joudutaan hieman logiikkaa restrukturoimaan
-      // säästö on kuitenkin selvä, vähemmän verkon yli meneviä pyyntöjä
-      const newData = mediaData.map((item) => {
-        const user = userData.find(({user_id}) => user_id === item.user_id);
-        return {...item, username: user.username};
-      });
+      // Build a dictionary for fast lookups of username from user_id
+      const userMap = userData.reduce((map, {user_id, username}) => {
+        map[user_id] = username;
+        return map;
+      }, {});
+
+      // Use the dictionary for O(1) lookups when mapping mediaData
+      const newData = mediaData.map((item) => ({
+        ...item,
+        username: userMap[item.user_id],
+      }));
 
       setMediaArray(newData);
     } catch (error) {
