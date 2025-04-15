@@ -40,10 +40,18 @@ const UserProvider = ({children}) => {
   const handleAutoLogin = async () => {
     try {
       // TODO: get token from local storage
+      const token = localStorage.getItem('token');
       // TODO: if token exists, get user data from API
-      // TODO: set user to state
-      // TODO: navigate to home
+      if (token) {
+        const userResponse = await getUserByToken(token);
+        // TODO: set user to state
+        setUser(userResponse.user);
+        // TODO: navigate to home
+        navigate('/');
+      }
     } catch (e) {
+      // if token not valid
+      handleLogout();
       console.log(e.message);
     }
   };

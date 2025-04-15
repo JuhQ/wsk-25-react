@@ -1,6 +1,13 @@
 import {Link, Outlet} from 'react-router';
+import {useUserContext} from '../hooks/contextHooks';
+import {useEffect} from 'react';
 
 const Layout = () => {
+  const {handleAutoLogin} = useUserContext();
+  useEffect(() => {
+    handleAutoLogin();
+  }, []);
+
   return (
     <div>
       <header>
