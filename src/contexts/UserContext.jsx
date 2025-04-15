@@ -13,18 +13,14 @@ const UserProvider = ({children}) => {
 
   // login, logout and autologin functions are here instead of components
   const handleLogin = async (credentials) => {
-    try {
-      // TODO: post login credentials to API
-      const loginResult = await postLogin(credentials);
-      // TODO: set token to local storage
-      localStorage.setItem('token', loginResult.token);
-      // TODO: set user to state
-      setUser(loginResult.user);
-      // TODO: navigate to home
-      navigate('/');
-    } catch (e) {
-      console.log(e.message);
-    }
+    // TODO: post login credentials to API
+    const loginResult = await postLogin(credentials);
+    // TODO: set token to local storage
+    localStorage.setItem('token', loginResult.token);
+    // TODO: set user to state
+    setUser(loginResult.user);
+    // TODO: navigate to home
+    navigate('/');
   };
 
   const handleLogout = () => {
