@@ -4,5 +4,5 @@ import react from '@vitejs/plugin-react-swc';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/~ilkkamtk/WSK-25/forms/',
+  base: '/~ilkkamtk/WSK-25/context/',
 });
