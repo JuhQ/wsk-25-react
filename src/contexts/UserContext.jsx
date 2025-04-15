@@ -30,8 +30,11 @@ const UserProvider = ({children}) => {
   const handleLogout = () => {
     try {
       // TODO: remove token from local storage
+      localStorage.removeItem('token');
       // TODO: set user to null
+      setUser(null);
       // TODO: navigate to home
+      navigate('/');
     } catch (e) {
       console.log(e.message);
     }
