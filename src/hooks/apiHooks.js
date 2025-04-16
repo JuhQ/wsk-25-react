@@ -1,7 +1,7 @@
-import {method, uniqBy} from 'lodash';
 import {useCallback, useEffect, useState} from 'react';
 
 import {fetchData} from '../utils/fetchData';
+import {uniqBy} from 'lodash';
 
 const authApiUrl = import.meta.env.VITE_AUTH_API;
 const mediaApiUrl = import.meta.env.VITE_MEDIA_API;
