@@ -78,10 +78,7 @@ const Upload = () => {
           alt="preview"
           width="200"
         />
-        <button
-          type="submit"
-          disabled={file && inputs?.title.length > 3 ? false : true}
-        >
+        <button type="submit" disabled={!(file && inputs?.title.length > 3)}>
           Upload
         </button>
       </form>
