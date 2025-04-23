@@ -58,10 +58,39 @@ const useMedia = () => {
     return await fetchData(`${mediaApiUrl}/media`, fetchOptions);
   };
 
-  return {mediaArray, postMedia};
+  const modifyMedia = async (inputs, token) => {
+    const fetchOptions = {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer: ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(inputs),
+    };
+
+    return await fetchData(`${mediaApiUrl}/media/${inputs.id}`, fetchOptions);
+  };
+
+  const deleteMedia = async (id, token) => {
+    const fetchOptions = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer: ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+
+    return await fetchData(`${mediaApiUrl}/media/${id}`, fetchOptions);
+  };
+
+  return {mediaArray, postMedia, deleteMedia, modifyMedia};
 };
 
+const tokenExistsInLocalstorage = () => Boolean(localStorage.getItem('token'));
+
 const useAuthentication = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(tokenExistsInLocalstorage());
+
   const postLogin = async (inputs) => {
     const fetchOptions = {
       method: 'POST',
@@ -79,10 +108,12 @@ const useAuthentication = () => {
 
     window.localStorage.setItem('token', loginResult.token);
 
+    setIsLoggedIn(tokenExistsInLocalstorage());
+
     return loginResult;
   };
 
-  return {postLogin};
+  return {postLogin, isLoggedIn};
 };
 
 const useUser = () => {
