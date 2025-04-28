@@ -58,7 +58,7 @@ const Upload = () => {
             onChange={handleInputChange}
           ></textarea>
         </div>
-        <div>
+        <div className="my-2 flex flex-col">
           <label htmlFor="file">File</label>
           <input
             name="file"
