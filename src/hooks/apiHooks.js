@@ -91,11 +91,7 @@ const useMedia = () => {
   return {mediaArray, postMedia, deleteMedia, modifyMedia};
 };
 
-const tokenExistsInLocalstorage = () => Boolean(localStorage.getItem('token'));
-
 const useAuthentication = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(tokenExistsInLocalstorage());
-
   const postLogin = async (inputs) => {
     const fetchOptions = {
       method: 'POST',
@@ -110,7 +106,7 @@ const useAuthentication = () => {
     );
   };
 
-  return {postLogin, isLoggedIn};
+  return {postLogin};
 };
 
 const useUser = () => {
@@ -128,7 +124,7 @@ const useUser = () => {
     );
   };
 
-  const getUserByToken = useCallback(async (token) => {
+  const getUserByToken = async (token) => {
     const fetchOptions = {
       headers: {
         Authorization: 'Bearer: ' + token,
@@ -139,7 +135,7 @@ const useUser = () => {
       import.meta.env.VITE_AUTH_API + '/users/token',
       fetchOptions,
     );
-  }, []);
+  };
 
   return {getUserByToken, postUser};
 };

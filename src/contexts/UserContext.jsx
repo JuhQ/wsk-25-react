@@ -24,7 +24,7 @@ const UserProvider = ({children}) => {
     navigate('/');
   };
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = () => {
     try {
       // TODO: remove token from local storage
       localStorage.removeItem('token');
@@ -35,7 +35,7 @@ const UserProvider = ({children}) => {
     } catch (e) {
       console.log(e.message);
     }
-  }, [navigate]);
+  };
 
   // handleAutoLogin is used when the app is loaded to check if there is a valid token in local storage
   const handleAutoLogin = useCallback(async () => {
@@ -48,7 +48,7 @@ const UserProvider = ({children}) => {
         // TODO: set user to state
         setUser(userResponse.user);
         // TODO: navigate to home
-        console.log('location', location);
+        console.log('handleAutoLogin', location);
         navigate(location.pathname);
       }
     } catch (e) {
@@ -56,7 +56,7 @@ const UserProvider = ({children}) => {
       handleLogout();
       console.log(e.message);
     }
-  }, [getUserByToken, handleLogout, location, navigate]);
+  }, []);
 
   return (
     <UserContext.Provider
