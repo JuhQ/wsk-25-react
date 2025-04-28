@@ -6,7 +6,8 @@ import {uniqBy} from 'lodash';
 const authApiUrl = import.meta.env.VITE_AUTH_API;
 const mediaApiUrl = import.meta.env.VITE_MEDIA_API;
 
-const useMedia = () => {
+const useMedia = (listMedia = false) => {
+  console.log('listMedia', listMedia);
   const [mediaArray, setMediaArray] = useState([]);
 
   const getMedia = async () => {
@@ -38,7 +39,9 @@ const useMedia = () => {
   };
 
   useEffect(() => {
-    getMedia();
+    if (listMedia) {
+      getMedia();
+    }
   }, []);
 
   const postMedia = async (file, inputs, token) => {

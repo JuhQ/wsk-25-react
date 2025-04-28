@@ -4,15 +4,15 @@ import {useMedia} from '../hooks/apiHooks';
 import {useState} from 'react';
 
 const Home = () => {
-  const {mediaArray, deleteMedia, modifyMedia} = useMedia();
+  const {mediaArray, deleteMedia, modifyMedia} = useMedia(true);
   const [selectedItem, setSelectedItem] = useState(null);
 
   return (
     <>
-      <h2 className="text-2xl my-4 font-mono">My Media</h2>
+      <h2 className="my-4 font-mono text-2xl">My Media</h2>
       <table>
         <thead>
-          <tr className="*:p-4 *:border-2 *:border-[#ccc]">
+          <tr className="*:border-2 *:border-[#ccc] *:p-4">
             <th>Thumbnail</th>
             <th>Title</th>
             <th>Description</th>
