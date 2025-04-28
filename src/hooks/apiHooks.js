@@ -108,14 +108,6 @@ const useAuthentication = () => {
       import.meta.env.VITE_AUTH_API + '/auth/login',
       fetchOptions,
     );
-
-    console.log('loginResult', loginResult.token);
-
-    window.localStorage.setItem('token', loginResult.token);
-
-    setIsLoggedIn(tokenExistsInLocalstorage());
-
-    return loginResult;
   };
 
   return {postLogin, isLoggedIn};
@@ -176,13 +168,13 @@ const useFile = () => {
 };
 
 const useLike = () => {
-  const getLikesByMediaId = async (id) => {
+  const getLikesByMediaId = useCallback(async (id) => {
     const data = await fetchData(`${mediaApiUrl}/likes/bymedia/${id}`);
 
     console.log('like data', data);
 
     return data;
-  };
+  }, []);
 
   const postLike = async (media_id, token) => {
     const fetchOptions = {

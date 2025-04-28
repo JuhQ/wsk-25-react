@@ -1,5 +1,5 @@
 // UserContext.jsx
-import {createContext, useState} from 'react';
+import {createContext, useCallback, useState} from 'react';
 import {useAuthentication, useUser} from '../hooks/apiHooks';
 import {useNavigate, useLocation} from 'react-router';
 
@@ -24,7 +24,7 @@ const UserProvider = ({children}) => {
     navigate('/');
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     try {
       // TODO: remove token from local storage
       localStorage.removeItem('token');
@@ -35,10 +35,10 @@ const UserProvider = ({children}) => {
     } catch (e) {
       console.log(e.message);
     }
-  };
+  }, [navigate]);
 
   // handleAutoLogin is used when the app is loaded to check if there is a valid token in local storage
-  const handleAutoLogin = async () => {
+  const handleAutoLogin = useCallback(async () => {
     try {
       // TODO: get token from local storage
       const token = localStorage.getItem('token');
@@ -56,7 +56,7 @@ const UserProvider = ({children}) => {
       handleLogout();
       console.log(e.message);
     }
-  };
+  }, [getUserByToken, handleLogout, location, navigate]);
 
   return (
     <UserContext.Provider
