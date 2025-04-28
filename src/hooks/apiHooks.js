@@ -175,4 +175,42 @@ const useFile = () => {
   return {postFile};
 };
 
-export {useMedia, useAuthentication, useUser, useFile};
+const useLike = () => {
+  const getLikesByMediaId = async (id) => {
+    const data = await fetchData(`${mediaApiUrl}/likes/bymedia/${id}`);
+
+    console.log('like data', data);
+
+    return data;
+  };
+
+  const postLike = async (media_id, token) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer: ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({media_id}),
+    };
+
+    return await fetchData(`${mediaApiUrl}/likes`, fetchOptions);
+  };
+
+  const deleteLike = async (media_id, token) => {
+    const fetchOptions = {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer: ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({media_id}),
+    };
+
+    return await fetchData(`${mediaApiUrl}/likes/${media_id}`, fetchOptions);
+  };
+
+  return {getLikesByMediaId, postLike, deleteLike};
+};
+
+export {useMedia, useAuthentication, useUser, useFile, useLike};
