@@ -2,12 +2,14 @@ import {useCallback, useEffect, useState} from 'react';
 
 import {fetchData} from '../utils/fetchData';
 import {uniqBy} from 'lodash';
+import {useUpdateContext} from './contextHooks';
 
 const authApiUrl = import.meta.env.VITE_AUTH_API;
 const mediaApiUrl = import.meta.env.VITE_MEDIA_API;
 
-const useMedia = () => {
+const useMedia = (listMedia = false) => {
   const [mediaArray, setMediaArray] = useState([]);
+  const {update} = useUpdateContext();
 
   const getMedia = async () => {
     try {
@@ -38,8 +40,10 @@ const useMedia = () => {
   };
 
   useEffect(() => {
-    getMedia();
-  }, []);
+    if (listMedia) {
+      getMedia();
+    }
+  }, [listMedia, update]);
 
   const postMedia = async (file, inputs, token) => {
     const data = {
@@ -91,11 +95,7 @@ const useMedia = () => {
   return {mediaArray, postMedia, deleteMedia, modifyMedia};
 };
 
-const tokenExistsInLocalstorage = () => Boolean(localStorage.getItem('token'));
-
 const useAuthentication = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(tokenExistsInLocalstorage());
-
   const postLogin = async (inputs) => {
     const fetchOptions = {
       method: 'POST',
@@ -108,17 +108,9 @@ const useAuthentication = () => {
       import.meta.env.VITE_AUTH_API + '/auth/login',
       fetchOptions,
     );
-
-    console.log('loginResult', loginResult.token);
-
-    window.localStorage.setItem('token', loginResult.token);
-
-    setIsLoggedIn(tokenExistsInLocalstorage());
-
-    return loginResult;
   };
 
-  return {postLogin, isLoggedIn};
+  return {postLogin};
 };
 
 const useUser = () => {
@@ -136,7 +128,7 @@ const useUser = () => {
     );
   };
 
-  const getUserByToken = useCallback(async (token) => {
+  const getUserByToken = async (token) => {
     const fetchOptions = {
       headers: {
         Authorization: 'Bearer: ' + token,
@@ -147,7 +139,7 @@ const useUser = () => {
       import.meta.env.VITE_AUTH_API + '/users/token',
       fetchOptions,
     );
-  }, []);
+  };
 
   return {getUserByToken, postUser};
 };
@@ -176,13 +168,13 @@ const useFile = () => {
 };
 
 const useLike = () => {
-  const getLikesByMediaId = async (id) => {
+  const getLikesByMediaId = useCallback(async (id) => {
     const data = await fetchData(`${mediaApiUrl}/likes/bymedia/${id}`);
 
     console.log('like data', data);
 
     return data;
-  };
+  }, []);
 
   const postLike = async (media_id, token) => {
     const fetchOptions = {
@@ -213,4 +205,25 @@ const useLike = () => {
   return {getLikesByMediaId, postLike, deleteLike};
 };
 
-export {useMedia, useAuthentication, useUser, useFile, useLike};
+const useComment = () => {
+  const postComment = async (inputs, media_id, token) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer: ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({...inputs, media_id}),
+    };
+
+    return await fetchData(`${mediaApiUrl}/comments`, fetchOptions);
+  };
+
+  const getCommentsByMediaId = useCallback(async (id) => {
+    return await fetchData(`${mediaApiUrl}/comments/bymedia/${id}`);
+  }, []);
+
+  return {postComment, getCommentsByMediaId};
+};
+
+export {useMedia, useAuthentication, useUser, useFile, useLike, useComment};

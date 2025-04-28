@@ -1,8 +1,32 @@
+import {useEffect, useState} from 'react';
+import CommentForm from './CommentForm';
 import Likes from './Likes';
 import PropTypes from 'prop-types';
+import {useComment} from '../hooks/apiHooks';
+import Comment from './Comment';
+import {useUpdateContext} from '../hooks/contextHooks';
 
 const SingleView = (props) => {
+  const [comments, setComments] = useState([]);
   const {item, setSelectedItem} = props;
+  const {getCommentsByMediaId} = useComment();
+  const {update} = useUpdateContext();
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const commentResponse = await getCommentsByMediaId(item.media_id);
+        console.log('commentResponse', commentResponse);
+        setComments(commentResponse);
+      } catch (error) {
+        console.error('Error fetching comments:', error.message);
+        setComments([]);
+      }
+    };
+    if (item) {
+      fetchComments();
+    }
+  }, [getCommentsByMediaId, item, update]);
 
   const handleClick = () => {
     setSelectedItem(null);
@@ -13,17 +37,17 @@ const SingleView = (props) => {
       {item && (
         <dialog
           open
-          className="fixed inset-0 flex items-center justify-center bg-black/60 z-50 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
         >
-          <div className="w-11/12 max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="flex max-h-[90vh] w-11/12 max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-800">
             {/* Header with close button */}
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 flex justify-between items-center">
-              <h2 className="text-xl font-bold text-white truncate">
+            <div className="flex items-center justify-between bg-gradient-to-r from-blue-500 to-purple-600 p-4">
+              <h2 className="truncate text-xl font-bold text-white">
                 {item.title}
               </h2>
               <button
                 onClick={handleClick}
-                className="text-white bg-white/20 hover:bg-white/30 rounded-full w-8 h-8 flex items-center justify-center transition-colors duration-300"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/20 text-white transition-colors duration-300 hover:bg-white/30"
                 aria-label="Close dialog"
               >
                 <span className="text-xl">&#10005;</span>
@@ -31,8 +55,8 @@ const SingleView = (props) => {
             </div>
 
             {/* Media content */}
-            <div className="overflow-auto flex-1">
-              <div className="bg-black flex justify-center">
+            <div className="flex-1 overflow-auto">
+              <div className="flex justify-center bg-black">
                 {item.media_type.includes('video') ? (
                   <video
                     src={item.filename}
@@ -50,16 +74,28 @@ const SingleView = (props) => {
 
               {/* Content details */}
               <div className="p-6">
-                <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-2">
+                <h3 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white">
                   {item.title}
                 </h3>
-                <p className="text-gray-600 dark:text-gray-300 mb-6 whitespace-pre-wrap">
+                <p className="mb-6 whitespace-pre-wrap text-gray-600 dark:text-gray-300">
                   {item.description}
                 </p>
 
                 {/* Likes component with styling */}
                 <div className="mt-4 border-t pt-4 dark:border-gray-700">
                   <Likes media_id={item.media_id} />
+                </div>
+                <div>
+                  <CommentForm item={item} />
+                </div>
+                <div>
+                  {comments.length > 0 &&
+                    comments.map((comment) => (
+                      <Comment
+                        key={comment.comment_id}
+                        comment={comment.comment_text}
+                      />
+                    ))}
                 </div>
               </div>
             </div>

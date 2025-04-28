@@ -6,7 +6,7 @@ const Layout = () => {
   const {user, handleAutoLogin} = useUserContext();
   useEffect(() => {
     handleAutoLogin();
-  }, []);
+  }, [handleAutoLogin]);
 
   return (
     <div>

@@ -1,27 +1,33 @@
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 
 import {useLike} from '../hooks/apiHooks';
+import {FaHeart, FaRegHeart} from 'react-icons/fa6';
+import {useUserContext} from '../hooks/contextHooks';
 
 const Likes = ({media_id}) => {
   const {getLikesByMediaId, postLike, deleteLike} = useLike();
   const [likes, setLikes] = useState([]);
+  const [userLike, setUserLike] = useState(false);
   const token = localStorage.getItem('token');
 
   // TODO: Should come from context (merge context branch)
-  const logged_in_userid = 280;
+  const {user} = useUserContext();
 
-  const getLikes = async () => {
+  const getLikes = useCallback(async () => {
     const data = await getLikesByMediaId(media_id);
     setLikes(data);
-  };
+  }, [getLikesByMediaId, media_id]);
 
   useEffect(() => {
     getLikes();
     // TODO: infinite loop jos getLikesByMediaId funktion laittaa depsuksi
     // getLikes voisi olla useCallbackin sisällä
-  }, [media_id]);
+  }, [getLikes]);
 
-  console.log('likes', likes);
+  useEffect(() => {
+    console.log('moro', likes);
+    setUserLike(likes.find((like) => like.user_id === user.user_id));
+  }, [likes, user.user_id]);
 
   return (
     <button
@@ -29,22 +35,20 @@ const Likes = ({media_id}) => {
       onClick={async () => {
         try {
           // TODO: off-by-one virhetilanne klikissä
-          const userLike = likes.find(
-            (like) => like.user_id === logged_in_userid,
-          );
+
           if (userLike) {
-            deleteLike(userLike.like_id, token);
-            getLikes();
+            await deleteLike(userLike.like_id, token);
+            await getLikes();
           } else {
             await postLike(media_id, token);
-            getLikes();
+            await getLikes();
           }
         } catch (error) {
-          console.log('tykkäys ei onnistu :(');
+          console.log(error.message);
         }
       }}
     >
-      ❤️ {likes.length} tykkäystä
+      {userLike ? <FaHeart /> : <FaRegHeart />} {likes.length} tykkäystä
     </button>
   );
 };

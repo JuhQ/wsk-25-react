@@ -49,25 +49,25 @@ const Upload = () => {
           id="title"
           onChange={handleInputChange}
         />
-        <div>
+        <div className="flex w-4/5 flex-col">
           <label htmlFor="description">Description</label>
           <textarea
+            className="my-2.5 rounded border-1 p-2.5"
             name="description"
             rows={5}
             id="description"
             onChange={handleInputChange}
           ></textarea>
         </div>
-        <div className="my-2 flex flex-col">
-          <label htmlFor="file">File</label>
-          <input
-            name="file"
-            type="file"
-            id="file"
-            accept="image/*, video/*"
-            onChange={handleFileChange}
-          />
-        </div>
+        <TextInput
+          label="File"
+          name="file"
+          type="file"
+          id="file"
+          accept="image/*, video/*"
+          onChange={handleFileChange}
+        />
+
         <img
           src={
             file
