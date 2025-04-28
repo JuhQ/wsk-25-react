@@ -1,14 +1,20 @@
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {useAuthentication} from '../hooks/apiHooks';
+import {useState} from 'react';
 
 const MediaRow = (props) => {
   const {isLoggedIn} = useAuthentication();
-  const {item, setSelectedItem} = props;
+  const [visible, setVisible] = useState(true);
+  const token = localStorage.getItem('token');
+  const {item, setSelectedItem, deleteMedia} = props;
 
-  const handleClick = () => {
-    setSelectedItem(item);
-  };
+  // TODO: userid should come from context, not hardcoded value
+  const loggedin_user_id = 280;
+
+  if (!visible) {
+    return null;
+  }
 
   return (
     <tr className="*:p-4 *:border-2 *:border-[#ccc]">
@@ -46,11 +52,11 @@ const MediaRow = (props) => {
             View
           </Link>
 
-          {isLoggedIn && (
+          {isLoggedIn && item.user_id === loggedin_user_id && (
             <>
               <button
                 type="button"
-                className="hover:bg-sky-400 hover:text-black"
+                className="hover:bg-sky-400 hover:text-black border-2 rounded bg-blue-400"
                 onClick={() => {
                   console.log('edit button clicked');
                 }}
@@ -59,9 +65,15 @@ const MediaRow = (props) => {
               </button>
               <button
                 type="button"
-                className="hover:bg-red-500"
+                className="hover:bg-red-500 rounded bg-red-200 text-red-900 hover:text-red-100"
                 onClick={() => {
                   console.log('delete button clicked');
+                  if (
+                    confirm('Oletko varma että haluat poistaa tämän kuvan?')
+                  ) {
+                    deleteMedia(item.media_id, token);
+                    setVisible(false);
+                  }
                 }}
               >
                 Delete
