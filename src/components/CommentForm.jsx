@@ -1,11 +1,10 @@
 import useForm from '../hooks/formHooks';
-import {useUserContext} from '../hooks/contextHooks';
 import TextInput from './ui/TextInput';
+import {useComment} from '../hooks/apiHooks';
 
 // CommentForm.jsx
-const CommentForm = () => {
-  const {user} = useUserContext();
-  const {postComment} = useUserContext();
+const CommentForm = ({item}) => {
+  const {postComment} = useComment();
 
   const initValues = {
     comment: '',
@@ -17,7 +16,7 @@ const CommentForm = () => {
       if (!token) {
         throw new Error('No token found');
       }
-      const result = await postComment(inputs, user.media_id, token);
+      const result = await postComment(inputs, item.media_id, token);
       console.log(result);
     } catch (e) {
       alert(e.message);
