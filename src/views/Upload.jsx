@@ -39,27 +39,31 @@ const Upload = () => {
 
   return (
     <>
-      <h1>Upload</h1>
+      <h1 className="text-4xl my-12">Upload</h1>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="my-2 flex flex-col">
           <label htmlFor="title">Title</label>
           <input
             name="title"
             type="text"
             id="title"
             onChange={handleInputChange}
+            placeholder="Media title"
+            className="border-2 border-amber-100 ml-2 rounded py-1 px-4"
           />
         </div>
-        <div>
+        <div className="my-2 flex flex-col">
           <label htmlFor="description">Description</label>
           <textarea
             name="description"
             rows={5}
             id="description"
             onChange={handleInputChange}
+            placeholder="Media description"
+            className="border-2 border-amber-100 ml-2 rounded py-1 px-4"
           ></textarea>
         </div>
-        <div>
+        <div className="my-2 flex flex-col">
           <label htmlFor="file">File</label>
           <input
             name="file"
@@ -67,7 +71,21 @@ const Upload = () => {
             id="file"
             accept="image/*, video/*"
             onChange={handleFileChange}
+            className="
+              block w-full text-sm text-white border
+              border-gray-300 rounded-lg cursor-pointer bg-zinc-700
+              dark:text-gray-400 focus:outline-none dark:bg-gray-700
+              dark:border-gray-600 dark:placeholder-gray-400
+              p-2 py-12
+              "
           />
+
+          <p
+            className="mt-1 text-sm text-gray-500 dark:text-gray-300"
+            id="file_input_help"
+          >
+            SVG, PNG, JPG or GIF.
+          </p>
         </div>
         <img
           src={
@@ -78,7 +96,11 @@ const Upload = () => {
           alt="preview"
           width="200"
         />
-        <button type="submit" disabled={!(file && inputs?.title.length > 3)}>
+        <button
+          className="rounded border-2 border-amber-300 mt-4 p-2 px-12"
+          type="submit"
+          disabled={!(file && inputs?.title.length > 3)}
+        >
           Upload
         </button>
       </form>

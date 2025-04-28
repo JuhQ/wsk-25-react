@@ -68,7 +68,12 @@ const useMedia = () => {
       body: JSON.stringify(inputs),
     };
 
-    return await fetchData(`${mediaApiUrl}/media/${inputs.id}`, fetchOptions);
+    console.log('inputs', inputs);
+
+    return await fetchData(
+      `${mediaApiUrl}/media/${inputs.media_id}`,
+      fetchOptions,
+    );
   };
 
   const deleteMedia = async (id, token) => {

@@ -1,3 +1,4 @@
+import EditDialog from './EditDialog';
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {useAuthentication} from '../hooks/apiHooks';
@@ -7,7 +8,9 @@ const MediaRow = (props) => {
   const {isLoggedIn} = useAuthentication();
   const [visible, setVisible] = useState(true);
   const token = localStorage.getItem('token');
-  const {item, setSelectedItem, deleteMedia} = props;
+  const [showEdit, setShowEdit] = useState(false);
+
+  const {item, setSelectedItem, deleteMedia, modifyMedia} = props;
 
   // TODO: userid should come from context, not hardcoded value
   const loggedin_user_id = 280;
@@ -59,10 +62,20 @@ const MediaRow = (props) => {
                 className="hover:bg-sky-400 hover:text-black border-2 rounded bg-blue-400"
                 onClick={() => {
                   console.log('edit button clicked');
+                  setShowEdit(true);
                 }}
               >
                 Edit
               </button>
+
+              {showEdit && (
+                <EditDialog
+                  item={item}
+                  modifyMedia={modifyMedia}
+                  onClose={() => setShowEdit(false)}
+                />
+              )}
+
               <button
                 type="button"
                 className="hover:bg-red-500 rounded bg-red-200 text-red-900 hover:text-red-100"
