@@ -7,7 +7,6 @@ const authApiUrl = import.meta.env.VITE_AUTH_API;
 const mediaApiUrl = import.meta.env.VITE_MEDIA_API;
 
 const useMedia = (listMedia = false) => {
-  console.log('listMedia', listMedia);
   const [mediaArray, setMediaArray] = useState([]);
 
   const getMedia = async () => {
@@ -42,7 +41,7 @@ const useMedia = (listMedia = false) => {
     if (listMedia) {
       getMedia();
     }
-  }, []);
+  }, [listMedia]);
 
   const postMedia = async (file, inputs, token) => {
     const data = {
