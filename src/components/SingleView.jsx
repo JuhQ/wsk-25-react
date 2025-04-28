@@ -1,9 +1,32 @@
+import {useEffect, useState} from 'react';
 import CommentForm from './CommentForm';
 import Likes from './Likes';
 import PropTypes from 'prop-types';
+import {useComment} from '../hooks/apiHooks';
+import Comment from './Comment';
+import {useUpdateContext} from '../hooks/contextHooks';
 
 const SingleView = (props) => {
+  const [comments, setComments] = useState([]);
   const {item, setSelectedItem} = props;
+  const {getCommentsByMediaId} = useComment();
+  const {update} = useUpdateContext();
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const commentResponse = await getCommentsByMediaId(item.media_id);
+        console.log('commentResponse', commentResponse);
+        setComments(commentResponse);
+      } catch (error) {
+        console.error('Error fetching comments:', error.message);
+        setComments([]);
+      }
+    };
+    if (item) {
+      fetchComments();
+    }
+  }, [getCommentsByMediaId, item, setComments, update]);
 
   const handleClick = () => {
     setSelectedItem(null);
@@ -64,6 +87,15 @@ const SingleView = (props) => {
                 </div>
                 <div>
                   <CommentForm item={item} />
+                </div>
+                <div>
+                  {comments.length > 0 &&
+                    comments.map((comment) => (
+                      <Comment
+                        key={comment.comment_id}
+                        comment={comment.comment_text}
+                      />
+                    ))}
                 </div>
               </div>
             </div>

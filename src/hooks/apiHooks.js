@@ -2,12 +2,14 @@ import {useCallback, useEffect, useState} from 'react';
 
 import {fetchData} from '../utils/fetchData';
 import {uniqBy} from 'lodash';
+import {useUpdateContext} from './contextHooks';
 
 const authApiUrl = import.meta.env.VITE_AUTH_API;
 const mediaApiUrl = import.meta.env.VITE_MEDIA_API;
 
 const useMedia = (listMedia = false) => {
   const [mediaArray, setMediaArray] = useState([]);
+  const {update} = useUpdateContext();
 
   const getMedia = async () => {
     try {
@@ -41,7 +43,7 @@ const useMedia = (listMedia = false) => {
     if (listMedia) {
       getMedia();
     }
-  }, [listMedia]);
+  }, [listMedia, update]);
 
   const postMedia = async (file, inputs, token) => {
     const data = {
@@ -217,7 +219,11 @@ const useComment = () => {
     return await fetchData(`${mediaApiUrl}/comments`, fetchOptions);
   };
 
-  return {postComment};
+  const getCommentsByMediaId = useCallback(async (id) => {
+    return await fetchData(`${mediaApiUrl}/comments/bymedia/${id}`);
+  }, []);
+
+  return {postComment, getCommentsByMediaId};
 };
 
 export {useMedia, useAuthentication, useUser, useFile, useLike, useComment};
