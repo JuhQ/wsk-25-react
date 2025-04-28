@@ -3,6 +3,7 @@ import {Link} from 'react-router';
 import PropTypes from 'prop-types';
 import {useAuthentication} from '../hooks/apiHooks';
 import {useState} from 'react';
+import Likes from './Likes';
 
 const MediaRow = (props) => {
   const {isLoggedIn} = useAuthentication();
@@ -20,7 +21,7 @@ const MediaRow = (props) => {
   }
 
   return (
-    <tr className="*:p-4 *:border-2 *:border-[#ccc]">
+    <tr className="*:border-2 *:border-[#ccc] *:p-4">
       <td>
         <img
           src={item.thumbnail}
@@ -28,7 +29,9 @@ const MediaRow = (props) => {
           className="h-52 object-cover"
         />
       </td>
-      <td>{item.title}</td>
+      <td>
+        {item.title} <Likes media_id={item.media_id} />
+      </td>
       <td>{item.description}</td>
       <td>{item.username}</td>
       <td>{new Date(item.created_at).toLocaleString('fi-FI')}</td>
@@ -59,7 +62,7 @@ const MediaRow = (props) => {
             <>
               <button
                 type="button"
-                className="hover:bg-sky-400 hover:text-black border-2 rounded bg-blue-400"
+                className="rounded border-2 bg-blue-400 hover:bg-sky-400 hover:text-black"
                 onClick={() => {
                   console.log('edit button clicked');
                   setShowEdit(true);
@@ -78,7 +81,7 @@ const MediaRow = (props) => {
 
               <button
                 type="button"
-                className="hover:bg-red-500 rounded bg-red-200 text-red-900 hover:text-red-100"
+                className="rounded bg-red-200 text-red-900 hover:bg-red-500 hover:text-red-100"
                 onClick={() => {
                   console.log('delete button clicked');
                   if (

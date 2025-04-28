@@ -203,4 +203,21 @@ const useLike = () => {
   return {getLikesByMediaId, postLike, deleteLike};
 };
 
-export {useMedia, useAuthentication, useUser, useFile, useLike};
+const useComment = () => {
+  const postComment = async (inputs, media_id, token) => {
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer: ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({...inputs, media_id}),
+    };
+
+    return await fetchData(`${mediaApiUrl}/comments`, fetchOptions);
+  };
+
+  return {postComment};
+};
+
+export {useMedia, useAuthentication, useUser, useFile, useLike, useComment};
