@@ -26,7 +26,7 @@ const SingleView = (props) => {
     if (item) {
       fetchComments();
     }
-  }, [getCommentsByMediaId, item, setComments, update]);
+  }, [getCommentsByMediaId, item, update]);
 
   const handleClick = () => {
     setSelectedItem(null);
