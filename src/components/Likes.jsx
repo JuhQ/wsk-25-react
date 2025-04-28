@@ -38,10 +38,10 @@ const Likes = ({media_id}) => {
 
           if (userLike) {
             await deleteLike(userLike.like_id, token);
-            getLikes();
+            await getLikes();
           } else {
             await postLike(media_id, token);
-            getLikes();
+            await getLikes();
           }
         } catch (error) {
           console.log(error.message);
