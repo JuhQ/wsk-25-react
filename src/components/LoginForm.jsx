@@ -1,11 +1,10 @@
-import {useAuthentication} from '../hooks/apiHooks';
 import useForm from '../hooks/formHooks';
-import {useNavigate} from 'react-router';
+import {useUserContext} from '../hooks/contextHooks';
+import TextInput from './ui/TextInput';
 
 // LoginForm.jsx
 const LoginForm = () => {
-  const {postLogin} = useAuthentication();
-  const navigate = useNavigate();
+  const {handleLogin} = useUserContext();
 
   const initValues = {
     username: '',
@@ -13,11 +12,11 @@ const LoginForm = () => {
   };
 
   const doLogin = async () => {
-    console.log('login funktiota kutsuttu');
-    console.log(inputs);
-    // TODO: add login functionalities here
-    await postLogin(inputs);
-    navigate('/');
+    try {
+      await handleLogin(inputs);
+    } catch (e) {
+      alert(e.message);
+    }
   };
 
   const {inputs, handleInputChange, handleSubmit} = useForm(
@@ -30,26 +29,22 @@ const LoginForm = () => {
     <>
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="loginuser">Username</label>
-          <input
-            onChange={handleInputChange}
-            autoComplete="username"
-            type="text"
-            id="loginuser"
-            name="username"
-          />
-        </div>
-        <div>
-          <label htmlFor="loginpassword">Password</label>
-          <input
-            name="password"
-            type="password"
-            id="loginpassword"
-            onChange={handleInputChange}
-            autoComplete="current-password"
-          />
-        </div>
+        <TextInput
+          label="Username"
+          onChange={handleInputChange}
+          autoComplete="username"
+          type="text"
+          id="loginuser"
+          name="username"
+        />
+        <TextInput
+          label="Password"
+          name="password"
+          type="password"
+          id="loginpassword"
+          onChange={handleInputChange}
+          autoComplete="current-password"
+        />
         <button type="submit">Login</button>
       </form>
     </>

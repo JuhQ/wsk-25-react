@@ -1,8 +1,10 @@
 import {defineConfig} from 'vite';
 import react from '@vitejs/plugin-react-swc';
+import tailwindcss from '@tailwindcss/vite';
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
-  base: '/~ilkkamtk/WSK-25/forms/',
+  plugins: [react(), tailwindcss()],
+  base: '/~ilkkamtk/WSK-25/tailwind/',
 });
